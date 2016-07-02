@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/mk2/hyalite.git
+  revision: 9f34b7f03f2d810dfed0b5c150005fd9935f94e5
+  specs:
+    hyalite (0.0.1)
+      opal
+      opal-browser
+
+GIT
   remote: git://github.com/opal/opal-browser.git
   revision: 5d3be6e8ea7ae584c9fdddc8ce961b2e2107131a
   specs:
@@ -25,14 +33,6 @@ GIT
       sourcemap (~> 0.1.0)
       sprockets (~> 3.1)
       tilt (>= 1.4)
-
-GIT
-  remote: git://github.com/youchan/hyalite.git
-  revision: 4282f9e00df8d84551c4d088ce9d5ef7d7b25d03
-  specs:
-    hyalite (0.0.1)
-      opal
-      opal-browser
 
 GEM
   remote: https://rubygems.org/
@@ -62,4 +62,4 @@ DEPENDENCIES
   opal-haml!
 
 BUNDLED WITH
-   1.12.3
+   1.12.5
