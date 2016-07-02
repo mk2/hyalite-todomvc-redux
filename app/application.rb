@@ -1,59 +1,50 @@
 require 'hyalite'
 require 'browser/interval'
 
+require_relative 'store'
+
 class TodoView
   include Hyalite::Component
 
   def initial_state
-    @last_id = 0
-    @todos = [{id: @last_id, completed: false, content: "何かの予定"}]
-    {todos: @todos, show_completed: false}
+    @props[:store].subscribe do
+      state = @props[:store].state
+      p state
+      set_state({todos: state[:todos][:entities], show_completed: state[:show_completed]})
+    end
+    {todos: @props[:store].state[:todos][:entities], show_completed: @props[:store].state[:show_completed]}
+  end
+
+  def dispatch(type, payload)
+    @props[:store].dispatch({type: type, payload: payload})
   end
 
   def on_change_task(e, id)
-    @todos = @todos.map do |todo|
-      if todo[:id] == id
-        todo[:content] = e.target.value
-      end
-      todo
-    end
-    set_state(todos: @todos)
+    p id
+    dispatch(:change_task, {id: id, content: e.target.value})
   end
 
   def on_click_delete_task_button(e, id)
-    @todos = @todos.select do |todo|
-      todo[:id] != id
-    end
-    set_state(todos: @todos)
+    dispatch(:delete_task, {id: id})
   end
 
   def on_click_add_task_button(e)
-    puts "on_click_add_task_button"
-    @last_id += 1
-    @todos << {completed: false, content: " ", id: @last_id}
-    set_state(todos: @todos)
+    dispatch(:add_task, nil)
   end
 
   def on_click_complete_task_button(e, id)
-    @todos = @todos.map do |todo|
-      if todo[:id] == id
-        todo[:completed] = true
-      end
-      todo
-    end
-    set_state(todos: @todos)
+    dispatch(:complete_task, {id: id})
   end
 
   def on_toggle_show_completed_switch(e)
-    puts "on_toggle_show_completed_switch"
-    set_state(show_completed: !@state[:show_completed])
+    dispatch(:toggle_show_completed, nil)
   end
 
   def component_did_mount
   end
 
   def render
-    p @state
+    # p @state
 
     todo_elements = @state[:todos].map do |todo|
       !@state[:show_completed] && todo[:completed] ? nil :
@@ -102,5 +93,5 @@ class TodoView
 end
 
 $document.ready do
-  Hyalite.render(Hyalite.create_element(TodoView, nil), $document['#container'])
+  Hyalite.render(Hyalite.create_element(TodoView, {store: Store::configure_store}), $document['#container'])
 end
