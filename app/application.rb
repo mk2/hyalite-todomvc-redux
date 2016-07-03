@@ -61,11 +61,6 @@ class TodoView
           )
     end
 
-    p @state[:show_completed] ?
-      Hyalite.create_element("input", {type: "checkbox", checked: true, onChange: -> (event) {on_toggle_show_completed_switch(event)} }) :
-      Hyalite.create_element("input", {type: "checkbox", onChange: -> (event) {on_toggle_show_completed_switch(event)} }),
-
-
     completed_tasks_switch =
       Hyalite.create_element("div", {className: "form-group"},
         Hyalite.create_element("label", {className: "form-switch"},
