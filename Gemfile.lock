@@ -1,6 +1,7 @@
 GIT
   remote: git://github.com/mk2/hyalite.git
-  revision: 9f34b7f03f2d810dfed0b5c150005fd9935f94e5
+  revision: 4a25d87eca98bfa91ad910eb309b00065b10d3fe
+  branch: fix_input_checked_attr_handling
   specs:
     hyalite (0.0.1)
       opal
