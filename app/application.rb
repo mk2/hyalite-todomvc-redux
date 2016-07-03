@@ -1,50 +1,69 @@
 require 'hyalite'
 require 'browser/interval'
 
-require_relative 'store'
-
 class TodoView
   include Hyalite::Component
 
   def initial_state
+    @last_id = 0
+    @todos = [{id: @last_id, completed: false, content: "何かの予定"}]
+
+    # For redux
     @props[:store].subscribe do
-      state = @props[:store].state
-      p state
-      set_state({todos: state[:todos][:entities], show_completed: state[:show_completed]})
+      # TODO
     end
-    {todos: @props[:store].state[:todos][:entities], show_completed: @props[:store].state[:show_completed]}
+
+    {todos: @todos, show_completed: false}
   end
 
   def dispatch(type, payload)
-    @props[:store].dispatch({type: type, payload: payload})
+    # TODO
   end
 
   def on_change_task(e, id)
-    p id
-    dispatch(:change_task, {id: id, content: e.target.value})
+    @todos = @todos.map do |todo|
+      if todo[:id] == id
+        todo[:content] = e.target.value
+      end
+      todo
+    end
+    set_state(todos: @todos)
   end
 
   def on_click_delete_task_button(e, id)
-    dispatch(:delete_task, {id: id})
+    @todos = @todos.select do |todo|
+      todo[:id] != id
+    end
+    set_state(todos: @todos)
   end
 
   def on_click_add_task_button(e)
-    dispatch(:add_task, nil)
+    puts "on_click_add_task_button"
+    @last_id += 1
+    @todos << {completed: false, content: " ", id: @last_id}
+    set_state(todos: @todos)
   end
 
   def on_click_complete_task_button(e, id)
-    dispatch(:complete_task, {id: id})
+    @todos = @todos.map do |todo|
+      if todo[:id] == id
+        todo[:completed] = true
+      end
+      todo
+    end
+    set_state(todos: @todos)
   end
 
   def on_toggle_show_completed_switch(e)
-    dispatch(:toggle_show_completed, nil)
+    puts "on_toggle_show_completed_switch"
+    set_state(show_completed: !@state[:show_completed])
   end
 
   def component_did_mount
   end
 
   def render
-    # p @state
+    p @state
 
     todo_elements = @state[:todos].map do |todo|
       !@state[:show_completed] && todo[:completed] ? nil :
