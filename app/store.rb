@@ -7,7 +7,7 @@ module Store
       state ||= false
       case action[:type]
       when :toggle_show_completed
-        # TODO
+        !state
       else
         state
       end
@@ -16,13 +16,27 @@ module Store
       state ||= {last_id: 0, entities: []}
       case action[:type]
       when :change_task
-        # TODO
+        state[:entities].map! do |entity|
+          if entity[:id] == action[:payload][:id]
+            entity[:content] = action[:payload][:content]
+          end
+          entity
+        end
+        p state
       when :add_task
-        # TODO
+        state[:entities] << {completed: false, content: "", id: state[:last_id]}
+        state[:last_id] += 1
       when :delete_task
-        # TODO
+        state[:entities].select! do |entity|
+          entity[:id] != action[:payload][:id]
+        end
       when :complete_task
-        # TODO
+        state[:entities].map! do |entity|
+          if entity[:id] == action[:payload][:id]
+            entity[:completed] = true
+          end
+          entity
+        end
       end
       state
     }
